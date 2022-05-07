@@ -1,0 +1,17 @@
+[info]
+title=TreeHelper for Text (tabbed syntax)
+desc=TreeHelper for "Text (tabbed syntax)" lexer
+type=cudatext-plugin
+subdir=cuda_tree_tabulated
+homepage=
+
+[treehelper1]
+lexers=Text (tabbed syntax)
+method=get_headers
+fold=1
+
+[item1]
+section=commands
+caption=TreeHelper - Tabulated\Config
+method=config
+menu=op
