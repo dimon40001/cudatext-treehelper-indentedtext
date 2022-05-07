@@ -24,7 +24,7 @@ max_tree_text_length=40
 level1_is_always_node=True
     Always show root level (levels are 1-numbered) icon as node
 
-display_leafs=True
+display_leaves=True
 
 respect_markdown_paragraphs=True
 

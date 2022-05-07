@@ -13,7 +13,7 @@ node_icon=0
 leaf_icon=6
 max_tree_text_length=40
 level1_is_always_node=True
-display_leafs=True
+display_leaves=True
 respect_markdown_paragraphs=True
 exclude_lines_starting_with=---,===
 markdown_list_marks=+,-,*,.

@@ -43,7 +43,7 @@ def get_headers(filename, lines):
     op_max_tree_text_length = int(ini_read(op_file, op_section, "max_tree_text_length", "40"))
 
     op_level1_is_always_node = str_to_bool(ini_read(op_file, op_section, "level1_is_always_node", "True"))
-    op_display_leafs = str_to_bool(ini_read(op_file, op_section, "display_leafs", "True"))
+    op_display_leaves = str_to_bool(ini_read(op_file, op_section, "display_leaves", "True"))
     op_respect_markdown_paragraphs = str_to_bool(ini_read(op_file, op_section, "respect_markdown_paragraphs", "True"))
 
     op_exclude_lines_starting_with = ini_read(op_file, op_section, "exclude_lines_starting_with", "---,===")
@@ -83,7 +83,7 @@ def get_headers(filename, lines):
         if i2 < len(lines):
             level_next = get_level(lines[i2])
         else:
-            level_next = 0  # meaning there will be no more leafs or subnodes
+            level_next = 0  # meaning there will be no more leaves or subnodes
 
         # if next line is deeper - it's a node
         if level_next > level:
@@ -99,7 +99,7 @@ def get_headers(filename, lines):
                 icon = op_leaf_icon
 
             # create leaf if it's configured if not (op_respect_markdown_paragraphs and i2 == i+1): 
-            if op_display_leafs:
+            if op_display_leaves:
                 prev_line = lines[i - 1]
 
                 should_consider_as_item = True
@@ -127,7 +127,7 @@ class Command:
     op_node_icon = 0
     op_leaf_icon = 6
     op_level1_is_always_node = True
-    op_display_leafs = True
+    op_display_leaves = True
     op_respect_markdown_paragraphs = True
     op_exclude_lines_starting_with = "---,==="
     op_max_tree_text_length = 40
@@ -144,7 +144,7 @@ class Command:
 
         op_level1_is_always_node = str_to_bool(
             ini_read(op_file, op_section, "level1_is_always_node", str(self.op_level1_is_always_node)))
-        op_display_leafs = str_to_bool(ini_read(op_file, op_section, "display_leafs", str(self.op_display_leafs)))
+        op_display_leaves = str_to_bool(ini_read(op_file, op_section, "display_leaves", str(self.op_display_leaves)))
         op_respect_markdown_paragraphs = str_to_bool(
             ini_read(op_file, op_section, "respect_markdown_paragraphs", str(self.op_respect_markdown_paragraphs)))
 
@@ -158,7 +158,7 @@ class Command:
         ini_write(fn_config, op_section, 'max_tree_text_length', str(self.op_max_tree_text_length))
 
         ini_write(fn_config, op_section, 'level1_is_always_node', str(self.op_level1_is_always_node))
-        ini_write(fn_config, op_section, 'display_leafs', str(self.op_display_leafs))
+        ini_write(fn_config, op_section, 'display_leaves', str(self.op_display_leaves))
         ini_write(fn_config, op_section, 'respect_markdown_paragraphs', str(self.op_respect_markdown_paragraphs))
 
         ini_write(fn_config, op_section, 'exclude_lines_starting_with', self.op_exclude_lines_starting_with)
