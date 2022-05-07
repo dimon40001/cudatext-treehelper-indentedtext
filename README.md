@@ -12,11 +12,11 @@ Configurable through `plugins.ini` file
 node_icon=0
 leaf_icon=6
 max_tree_text_length=40
-level1_is_always_node=True
+always_show_root_level_as_node_icon=True
 display_leaves=True
-respect_markdown_paragraphs=True
-exclude_lines_starting_with=---,===
-markdown_list_marks=+,-,*,.
+paragraphs_separated_by_empty_line=True
+hide_lines_with_prefixes=---,===
+always_show_items_with_prefixes=+,-,*,.
 ```
 
 author: Dmitry Fedorov, https://github.com/dimon40001
