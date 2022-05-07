@@ -1,0 +1,17 @@
+[info]
+title=TreeHelper - IndentedText
+desc=TreeHelper for "Text IMproved" lexer. Builds code tree based on idea of indentation (Python-like tabs or 4x spaces) with some additional configurable features like icon selection, ability to recognize paragraphs and show or hide lines with particular prefixes.
+type=cudatext-plugin
+subdir=cuda_tree_indentedtext
+homepage=https://github.com/dimon40001
+
+[treehelper1]
+lexers=Text IMproved
+method=get_headers
+fold=1
+
+[item1]
+section=commands
+caption=TreeHelper - IndentedText\Config
+method=config
+menu=op
