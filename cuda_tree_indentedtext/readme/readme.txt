@@ -46,6 +46,7 @@ hide_lines_with_prefixes=---,===
 always_show_items_with_prefixes=+,-,*,.
     This is useful when `paragraphs_separated_by_empty_line` is enabled. So that lists (Markdown style) are still
     rendered as separate items even if there is no empty line between them.
+    Applicable both for nodes and leaves.
 
     In the example below all items will be present in the tree if this option is configured.
     Otherwise all items will "collaps" as a single paragraph named "+item1" because there's no empty lines in between.
