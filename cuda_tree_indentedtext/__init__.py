@@ -19,24 +19,32 @@ gets tuples in format
 
 
 def get_headers(filename, lines):
-    def is_empty_line(l2):
-        stripped = str.strip(l2)
-        line_is_empty = len(stripped) == 0
-        if line_is_empty:
-            return True
-        for ignore_line_prefix in op_hide_lines_with_prefixes.split(","):
-            if stripped.startswith(ignore_line_prefix):
-                return True
+
+    def get_leaf_icon(level):
+        if level == 1 and op_always_show_root_level_as_node_icon:
+            icon = op_node_icon
+        else:
+            icon = op_leaf_icon
+        return icon
+
+    def line_starts_with(line, prefixes):
+        if len(prefixes) != 0:
+            for prefix in prefixes.split(","):
+                if str.lstrip(line).startswith(prefix):
+                    return True
         return False
 
-    def get_level(l1):
-        l1 = str.expandtabs(l1, tab_size)
-        spaces_count = len(l1) - len(str.lstrip(l1))
-        if spaces_count % tab_size == 0 and not is_empty_line(l1):
-            lvl = 1 + floor(spaces_count / tab_size)
+    def is_empty_line(line):
+        return len(str.strip(line)) == 0 or line_starts_with(line, op_hide_lines_with_prefixes)
+
+    def get_level(line):
+        line = str.expandtabs(line, tab_size)
+        space_count = len(line) - len(str.lstrip(line))
+        if space_count % tab_size == 0 and not is_empty_line(line):
+            level = 1 + floor(space_count / tab_size)
         else:
-            lvl = -1
-        return lvl
+            level = -1
+        return level
 
     def get_item_text(l3):
         item_text = str.strip(l3)
@@ -63,50 +71,48 @@ def get_headers(filename, lines):
     while i < lines_count:
         i = i + 1
 
-        # check if reached end of file
         if i >= lines_count:
             break
 
-        # parse current line
         line = str.expandtabs(lines[i], tab_size)  # required for making proper tree text
         level = get_level(line)
         text_position = len(lines[i]) - len(str.lstrip(lines[i]))
         text = get_item_text(line)
 
-        # skip empty lines and improperly tabulated
-        if is_empty_line(line) or level == -1:
+        if level < 1:
             continue
 
-        # THEN we have to determine if it's a leaf or not
-        # find position of first non-empty line after line-in-question
         i2 = i + 1
         while i2 < lines_count:
-            if is_empty_line(lines[i2]):
+            while is_empty_line(lines[i2]) or get_level(lines[i2]) < 1:
                 i2 = i2 + 1
+
+            if op_paragraphs_separated_by_empty_line and level == get_level(lines[i2]):
+                if not line_starts_with(lines[i2], op_always_show_items_with_prefixes):
+                    i2 = i2 + 1
+                else:
+                    break
             else:
                 break
+
         # if we have reached end of file then do nothing, otherwise create nodes
         if i2 < lines_count:
-            level_next = get_level(lines[i2])
+            next_level = get_level(lines[i2])
         else:
-            level_next = -1  # meaning there will be no more leaves or subnodes
+            next_level = -1  # meaning there will be no more leaves or subnodes
 
         # if next line is deeper - it's a node
-        if level_next > level:
+        if next_level > level:
             r.append(((text_position, i, text_position, i + 1), level, text, op_node_icon))
-            # skip items of same level TODO and consider prefixes
-            while i + 1 < lines_count and level == get_level(lines[i + 1]):
-                i = i + 1
+
+            # skip to already known next relevant position and get back, since counter will be increased
+            # in the beginning of next iteration
+            i = i2 - 1
 
         # if next line is same, out line is leaf -> decide on markdown
         # if next line is shallower - current is a leaf
         else:
-
-            # decide on icon for Level1 if configured
-            if level == 1 and op_always_show_root_level_as_node_icon:
-                icon = op_node_icon
-            else:
-                icon = op_leaf_icon
+            icon = get_leaf_icon(level)
 
             # create leaf if it's configured if not (op_paragraphs_separated_by_empty_line and i2 == i+1): 
             if op_display_leaves:
@@ -115,16 +121,11 @@ def get_headers(filename, lines):
 
                 # skip same level items
                 if op_paragraphs_separated_by_empty_line:
-                    should_consider_as_item = False
                     while i + 1 < lines_count and level == get_level(lines[i + 1]):
-                        if len(op_always_show_items_with_prefixes) != 0:
-                            for prefix in op_always_show_items_with_prefixes.split(","):
-                                if str.lstrip(lines[i + 1]).startswith(prefix):
-                                    should_consider_as_item = True
-                                    break
-                        if should_consider_as_item:
+                        if not line_starts_with(lines[i + 1], op_always_show_items_with_prefixes):
+                            i = i + 1
+                        else:
                             break
-                        i = i + 1
 
     return r
 
